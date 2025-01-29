@@ -4,6 +4,10 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+//migrate하는 방법(name 뒤에는 commit message)
+//npx prisma migrate dev --name add_album
+
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,10 +17,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Artist {
+  id Int @id @default(autoincrement())
+  name String
+  albums Album[]
+
+}
+
+model Album{
+  id Int @id @default(autoincrement())
+  title String
+  releaseDate DateTime
+  artist Artist @relation(fields: [artistId], references: [id])
+  artistId Int
+  songs Song[]
+}
+
 model Song {
   id        Int      @id @default(autoincrement())
   title     String
-  artist    String
-  genre     String
+  genres     Genre[] @relation("SongToGenre")
+  album Album @relation(fields: [albumId], references: [id])
+  albumId Int
   createdAt DateTime @default(now())
+}
+
+model Genre{
+  id Int @id @default(autoincrement())
+  name String
+  songs Song[] @relation("SongToGenre")
 }
