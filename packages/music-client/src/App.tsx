@@ -7,6 +7,7 @@ import RootLayout from "./presentationals/common/RootLayout";
 import SliderPanel from "./presentationals/common/SliderPanel";
 import SectionPanel from "./presentationals/home/SectionPanel";
 import PlayerWrapper from "./presentationals/player/PlayerWrapper";
+import AudioContainer from "./containers/player/AudioContainer";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,9 @@ function App() {
           </div>
         </SliderPanel>
       </RootLayout>
-      <PlayerWrapper />
+      <PlayerWrapper>
+        <AudioContainer src="/nodens-field-song-6041.mp3"/>
+      </PlayerWrapper>
     </QueryClientProvider>
   );
 }
