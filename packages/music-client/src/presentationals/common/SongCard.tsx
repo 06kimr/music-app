@@ -1,5 +1,7 @@
 import { tw } from "@/twMerge";
 import { createContext, PropsWithChildren, useContext } from "react";
+import { motion } from "framer-motion";
+import PlayButton from "../player/PlayButton";
 
 type Variant = "horizontal" | "vertical";
 
@@ -18,7 +20,23 @@ function SongCard({
       : "flex-row gap-x-14 items-center";
   return (
     <SongCardContext.Provider value={{ variant }}>
-      <div className={tw("flex", variantClass, className)}>{children}</div>
+      <motion.div
+        className={tw("flex relative p-9 rounded-6", variantClass, className)}
+        whileTap="tap"
+        whileHover="hover"
+        initial="rest"
+        variants={variant === "vertical" ? {
+          tap: { scale: 0.95 },
+          rest: {background: "transparent"},
+          hover: {background: "rgba(255, 255, 255, 0.1)"}
+        }: {}}
+      >
+        {children}
+        <motion.span variants={{hover: {y:-10, opacity: 1}, rest: {opacity: 0, y: 0}}}
+        className="absolute right-19 top-135">
+          <PlayButton status={"paused"} onToggle={() => {}} />
+        </motion.span>
+      </motion.div>
     </SongCardContext.Provider>
   );
 }
