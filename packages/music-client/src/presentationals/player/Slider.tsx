@@ -5,5 +5,5 @@ export default function Slider({
   max,
   ...props
 }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input type="range" {...props} min={min} max={max} />;
+  return <input type="range" min={min} max={max} {...props} />;
 }

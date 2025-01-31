@@ -1,4 +1,4 @@
-import { graphql, HttpResponse } from "msw";
+import { graphql, http, HttpResponse, passthrough } from "msw";
 
 export const handlers = [
   graphql.query("GetSongs", () => {
@@ -18,4 +18,7 @@ export const handlers = [
     //   }]
     // })
   }),
+  http.get(/\/audio\/.*/, () => {
+    return passthrough();
+  })
 ];

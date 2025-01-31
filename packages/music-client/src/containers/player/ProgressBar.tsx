@@ -19,7 +19,7 @@ export default function ProgressBar({
   return (
     <div className="flex items-center gap-x-17">
       <span>{fomratTime(currentTime)}</span>
-      <Slider min={0} max={duration} onChange={handleChange} />
+      <Slider min={0} max={duration} onChange={handleChange} value={currentTime} />
       <span>{fomratTime(duration)}</span>
     </div>
   );

@@ -4,7 +4,7 @@ import ProgressBar from "./ProgressBar";
 import VolumeController from "./VolumeController";
 
 interface Props {
-  src: string;
+  src?: string;
 }
 
 export default function AudioContainer({ src }: Props) {

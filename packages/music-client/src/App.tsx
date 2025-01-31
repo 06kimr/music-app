@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import useGetSongs from "./hooks/useGetSongs";
 import ErrorFallback from "./presentationals/common/ErrorFallback";
@@ -8,14 +8,27 @@ import SliderPanel from "./presentationals/common/SliderPanel";
 import SectionPanel from "./presentationals/home/SectionPanel";
 import PlayerWrapper from "./presentationals/player/PlayerWrapper";
 import AudioContainer from "./containers/player/AudioContainer";
+import { useAppStore } from "./store";
 
 const queryClient = new QueryClient();
 
 function App() {
   const [open, setOpen] = useState(false);
+  const { currentSong, setCurrentSong } = useAppStore();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    setCurrentSong({
+      id: 1,
+      title: "Song 1",
+      artist: "Artist 1",
+      genre: "rock",
+      path: "http://localhost:4000/audio/nodens-field-song-6041.mp3",
+    });
+  }, [setCurrentSong]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <RootLayout>
@@ -30,7 +43,7 @@ function App() {
         </SliderPanel>
       </RootLayout>
       <PlayerWrapper>
-        <AudioContainer src="/nodens-field-song-6041.mp3"/>
+        <AudioContainer src={currentSong?.path} />
       </PlayerWrapper>
     </QueryClientProvider>
   );
@@ -39,7 +52,11 @@ function App() {
 function TemComponent() {
   const { data } = useGetSongs();
   return (
-   <SectionPanel  songs={data ?? []} moreLink="/" title="패캠을 위한 믹스 & 추천"/>
+    <SectionPanel
+      songs={data ?? []}
+      moreLink="/"
+      title="패캠을 위한 믹스 & 추천"
+    />
   );
 }
 
