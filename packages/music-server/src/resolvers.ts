@@ -7,9 +7,7 @@ export const resolvers = {
     genres: async () => prisma.genre.findMany(),
     artists: async () =>
       prisma.artist.findMany({
-        include: {
-          albums: true,
-        },
+        include: { albums: true },
       }),
     artist: async (_: any, { id }: { id: string }) => {
       const artist = await prisma.artist.findUnique({
@@ -23,10 +21,9 @@ export const resolvers = {
         include: {
           genres: true,
           album: {
-            include: {
-              artist: true,
-            },
+            include: { artist: true },
           },
+          tags: true,
         },
       }),
     albums: async () =>
@@ -45,6 +42,10 @@ export const resolvers = {
             },
           },
         },
+      }),
+    tags: async () =>
+      prisma.tag.findMany({
+        include: { songs: true },
       }),
   },
   Mutation: {
@@ -67,23 +68,16 @@ export const resolvers = {
         albumId,
         genreIds,
         path,
-      }: { title: string; albumId: string; genreIds: string[]; path: string }
+      }: { title: string; albumId: string; genreIds: string[]; path: string },
     ) => {
       const song = await prisma.song.create({
         data: {
           title,
           album: { connect: { id: parseInt(albumId) } },
-          genres: {
-            connect: genreIds.map((id) => ({
-              id: parseInt(id),
-            })),
-          },
+          genres: { connect: genreIds.map((id) => ({ id: parseInt(id) })) },
           path,
         },
-        include: {
-          genres: true,
-          album: true,
-        },
+        include: { genres: true, album: true },
       });
       return song;
     },
@@ -92,23 +86,27 @@ export const resolvers = {
       {
         title,
         artistId,
-        releaseDate,
         thumbnail,
+        releaseDate,
       }: {
         title: string;
         artistId: string;
-        releaseDate: string;
         thumbnail: string;
-      }
+        releaseDate: string;
+      },
     ) => {
+      const artist = await prisma.artist.findUnique({
+        where: { id: parseInt(artistId) },
+      });
+
+      if (!artist) {
+        throw new Error(`Artist with ID ${artistId} not found`);
+      }
+
       const album = await prisma.album.create({
         data: {
           title,
-          artist: {
-            connect: {
-              id: parseInt(artistId),
-            },
-          },
+          artist: { connect: { id: parseInt(artistId) } },
           thumbnail,
           releaseDate: new Date(releaseDate),
         },
@@ -120,23 +118,54 @@ export const resolvers = {
       _: any,
       {
         name,
-        songIds,
         description,
-      }: { name: string; songIds: string[]; description: string }
+        songIds,
+      }: {
+        name: string;
+        description: string;
+        songIds: string[];
+      },
     ) => {
       const mixMaker = await prisma.mixMaker.create({
         data: {
           name,
           description,
-          songs: {
-            connect: songIds.map((id) => ({
-              id: parseInt(id),
-            })),
-          },
+          songs: { connect: songIds.map((id) => ({ id: parseInt(id) })) },
         },
         include: { songs: true },
       });
       return mixMaker;
+    },
+    addTag: async (
+      _: any,
+      { name, songIds }: { name: string; songIds?: string[] },
+    ) => {
+      const tag = await prisma.tag.create({
+        data: {
+          name,
+          songs: songIds
+            ? { connect: songIds.map((id) => ({ id: parseInt(id) })) }
+            : undefined,
+        },
+        include: { songs: true },
+      });
+      return tag;
+    },
+    addTagToSong: async (
+      _: any,
+      { tagId, songId }: { tagId: string; songId: string },
+    ) => {
+      const song = await prisma.song.update({
+        where: { id: parseInt(songId) },
+        data: {
+          tags: {
+            connect: { id: parseInt(tagId) },
+          },
+        },
+        include: { tags: true },
+      });
+
+      return song;
     },
   },
 };
