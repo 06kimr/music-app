@@ -27,7 +27,7 @@ export default function PlaylistItem({
 }: Props) {
   const [open, setOpen] = useState(false);
   return (
-    <li className="relative flex" onClick={() => onClick(song)}>
+    <div className="relative flex" onClick={() => onClick(song)}>
       <button
         className="absolute z-10 top-10 right-17"
         onClick={() => setOpen((prev) => !prev)}
@@ -115,6 +115,6 @@ export default function PlaylistItem({
           <SongCard.Description>{song.album.artist.name}</SongCard.Description>
         </SongCard.Content>
       </SongCard>
-    </li>
+    </div>
   );
 }
