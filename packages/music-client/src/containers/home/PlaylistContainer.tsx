@@ -2,7 +2,15 @@ import PlaylistItem from "@/presentationals/home/PlaylistItem";
 import { useAppStore } from "@/store";
 
 export default function PlaylistContainer() {
-  const { playlist, setCurrentSong } = useAppStore();
+  const {
+    playlist,
+    playlists,
+    setCurrentSong,
+    removeFromPlaylist,
+    addPlaylist,
+    addSongToPlaylist,
+    likeSong,
+  } = useAppStore();
 
   return (
     <div className="flex flex-col h-full">
@@ -16,7 +24,18 @@ export default function PlaylistContainer() {
           </li>
         ) : (
           playlist.map((song) => (
-            <PlaylistItem key={song.id} song={song} onClick={(song) => {setCurrentSong(song)}} />
+            <PlaylistItem
+              playlists={playlists}
+              key={song.id}
+              song={song}
+              onClick={(song) => {
+                setCurrentSong(song);
+              }}
+              onRemoveFromPlaylist={(song) => removeFromPlaylist(song)}
+              onAddPlaylist={addPlaylist}
+              onAddSongToPlaylist={addSongToPlaylist}
+              onLikeSong={likeSong}
+            />
           ))
         )}
       </ul>
