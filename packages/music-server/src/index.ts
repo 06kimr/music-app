@@ -17,14 +17,14 @@ async function startServer() {
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   await server.start();
-  app.use("/audio", audioRouter);
   app.use(
     cors({
       origin: "http://localhost:5173",
     }),
-    express.json()
+    express.json(),
   );
-  // app.use(expressMiddleware(server));
+  app.use("/audio", audioRouter);
+  app.use(expressMiddleware(server));
 
   httpServer.listen(4000, () => {
     console.log(`Server is running on http://localhost:4000`);

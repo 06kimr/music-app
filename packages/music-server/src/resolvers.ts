@@ -20,15 +20,31 @@ export const resolvers = {
     },
     songs: async () =>
       prisma.song.findMany({
-        include: { genres: true, album: {
-          include: {
-            artist: true
-          }
-        }},
+        include: {
+          genres: true,
+          album: {
+            include: {
+              artist: true,
+            },
+          },
+        },
       }),
     albums: async () =>
       prisma.album.findMany({
         include: { artist: true, songs: true },
+      }),
+    mixMakers: async () =>
+      prisma.mixMaker.findMany({
+        include: {
+          songs: {
+            include: {
+              genres: true,
+              album: {
+                include: { artist: true },
+              },
+            },
+          },
+        },
       }),
   },
   Mutation: {
@@ -50,7 +66,8 @@ export const resolvers = {
         title,
         albumId,
         genreIds,
-      }: { title: string; albumId: string; genreIds: string[] }
+        path,
+      }: { title: string; albumId: string; genreIds: string[]; path: string }
     ) => {
       const song = await prisma.song.create({
         data: {
@@ -61,6 +78,7 @@ export const resolvers = {
               id: parseInt(id),
             })),
           },
+          path,
         },
         include: {
           genres: true,
@@ -75,7 +93,13 @@ export const resolvers = {
         title,
         artistId,
         releaseDate,
-      }: { title: string; artistId: string; releaseDate: string }
+        thumbnail,
+      }: {
+        title: string;
+        artistId: string;
+        releaseDate: string;
+        thumbnail: string;
+      }
     ) => {
       const album = await prisma.album.create({
         data: {
@@ -85,11 +109,34 @@ export const resolvers = {
               id: parseInt(artistId),
             },
           },
+          thumbnail,
           releaseDate: new Date(releaseDate),
         },
         include: { artist: true },
       });
       return album;
+    },
+    addMixMaker: async (
+      _: any,
+      {
+        name,
+        songIds,
+        description,
+      }: { name: string; songIds: string[]; description: string }
+    ) => {
+      const mixMaker = await prisma.mixMaker.create({
+        data: {
+          name,
+          description,
+          songs: {
+            connect: songIds.map((id) => ({
+              id: parseInt(id),
+            })),
+          },
+        },
+        include: { songs: true },
+      });
+      return mixMaker;
     },
   },
 };

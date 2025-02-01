@@ -34,3 +34,10 @@ interface Playlist {
   name: string;
   songs: Song[];
 }
+
+interface MixMaker {
+  id: number;
+  name: string;
+  description: string;
+  songs: Song[];
+}

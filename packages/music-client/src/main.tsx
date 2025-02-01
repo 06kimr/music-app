@@ -4,11 +4,11 @@ import "./index.css";
 import App from "./App.tsx";
 
 async function enableMocking() {
-  if (import.meta.env.MODE !== "development") {
-    return;
-  }
-  const { worker } = await import("./__mock__/browser.ts");
-  return worker.start();
+  // if (import.meta.env.MODE !== "development") {
+  return;
+  // }
+  // const { worker } = await import("./__mock__/browser.ts");
+  // return worker.start();
 }
 
 enableMocking().then(() => {

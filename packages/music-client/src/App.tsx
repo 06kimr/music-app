@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import PlaylistContainer from "./containers/home/playlistContainer";
+import MixMakerContainer from "./containers/home/MixMakerContainer";
+import PlaylistContainer from "./containers/home/PlaylistContainer";
 import AudioContainer from "./containers/player/AudioContainer";
 import useGetSongs from "./hooks/useGetSongs";
 import ErrorFallback from "./presentationals/common/ErrorFallback";
@@ -21,6 +22,7 @@ function App() {
       <RootLayout>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <TemComponent />
+        <MixMakerContainer />
         </ErrorBoundary>
         <SliderPanel open={isPlayListExpanded}>
           <PlaylistContainer />
@@ -41,7 +43,7 @@ function TemComponent() {
       songs={data ?? []}
       moreLink="/"
       title="패캠을 위한 믹스 & 추천"
-      onItemClick={(song) => addToPlaylist(song)}
+      onItemClick={(song) => addToPlaylist([song])}
     />
   );
 }
