@@ -10,19 +10,20 @@ import SliderPanel from "./presentationals/common/SliderPanel";
 import SectionPanel from "./presentationals/home/SectionPanel";
 import PlayerWrapper from "./presentationals/player/PlayerWrapper";
 import { useAppStore } from "./store";
+import RecommendationsContainer from "./containers/home/RecommendationsContainer";
 
 const queryClient = new QueryClient();
 
 function App() {
-  const { currentSong, isPlayListExpanded } =
-    useAppStore();
+  const { currentSong, isPlayListExpanded } = useAppStore();
 
   return (
     <QueryClientProvider client={queryClient}>
       <RootLayout>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <TemComponent />
-        <MixMakerContainer />
+          <MixMakerContainer />
+          <RecommendationsContainer />
         </ErrorBoundary>
         <SliderPanel open={isPlayListExpanded}>
           <PlaylistContainer />
