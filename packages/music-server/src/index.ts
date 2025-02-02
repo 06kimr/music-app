@@ -7,6 +7,7 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import cors from "cors";
 import { expressMiddleware } from "@apollo/server/express4";
 import audioRouter from "./router/audioRouter";
+import musicRouter from "./router/musicRouter";
 
 async function startServer() {
   const app = express();
@@ -24,6 +25,7 @@ async function startServer() {
     express.json(),
   );
   app.use("/audio", audioRouter);
+  app.use("/music", musicRouter);
   app.use(expressMiddleware(server));
 
   httpServer.listen(4000, () => {
