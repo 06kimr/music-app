@@ -8,7 +8,7 @@ COPY package.json .
 RUN npm install
 
 #Bundle app source
-COPY tsconfig.json .
+COPY tsconfig.json ./
 COPY src ./src
 COPY prisma ./prisma
 COPY .env ./
